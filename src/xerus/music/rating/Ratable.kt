@@ -7,4 +7,6 @@ interface Ratable {
 	fun getRating(): Rating
 	fun getRating(id: Int): Rating
 	
+	
+	
 }

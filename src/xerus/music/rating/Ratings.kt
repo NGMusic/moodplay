@@ -23,10 +23,10 @@ class Ratings(override val id: Int) : Ratable {
 	override fun getRating(id: Int): Rating = getRatingInternal(id).toFloat()
 	
 	private fun getRatingInternal(id: Int): MutableFloat = ratings[id] ?: run {
-		val rating = helper.getRatableById(id)?.let { other ->
+		val rating = MutableFloat(helper.getRatableById(id)?.let { other ->
 			helper.calculateRating(this, other).also { r -> other.ratings.set(id, r) }
-		} ?: helper.defaultRating
-		ratings[id] = MutableFloat(rating)
+		} ?: helper.defaultRating)
+		ratings[id] = rating
 		rating
 	}
 	

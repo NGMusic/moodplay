@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.2.30"
+    kotlin("jvm") version "1.2.31"
 }
 
-java.sourceSets["main"].srcDir("src")
+java.sourceSets["main"].java.srcDir("src")
 
 repositories {
     jcenter()
@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     compile(kotlin("stdlib"))
-    compile("org.slf4j", "slf4j-api")
+    compile("org.slf4j", "slf4j-api", "1.7.25")
 }
 
 tasks.withType<KotlinCompile> {
