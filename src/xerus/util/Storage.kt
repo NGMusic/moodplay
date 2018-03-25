@@ -3,15 +3,17 @@ package xerus.util
 import java.util.*
 import java.util.function.Consumer
 
+// FIXME custom implementation as List
+
 /**
- * An ArrayList that will adjust it's size automatically and never throws an
+ * An ArrayList that will grow automatically instead of throwing an
  * [ArrayIndexOutOfBoundsException]
  *
  * No remove operations supported
  */
 class Storage<E> constructor(
 		/** required for [getOrDefault]  */
-		private val defaultVal: E? = null) : ArrayList<E?>(256) {
+		private val defaultVal: E? = null) : ArrayList<E?>(256), Iterable<E> {
 	
 	/** the index of the last non-null item  */
 	override var size: Int = 0

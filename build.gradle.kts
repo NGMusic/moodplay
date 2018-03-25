@@ -4,6 +4,8 @@ plugins {
     kotlin("jvm") version "1.2.31"
 }
 
+group = "xerus.music"
+
 java.sourceSets["main"].java.srcDir("src")
 
 repositories {

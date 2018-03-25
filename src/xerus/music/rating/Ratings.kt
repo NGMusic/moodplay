@@ -1,3 +1,4 @@
+import org.slf4j.LoggerFactory
 import xerus.util.MutableFloat
 import xerus.util.Storage
 
@@ -40,12 +41,12 @@ class Ratings(override val id: Int) : Ratable {
 	fun updateRating(s: Ratings, change: Float) {
 		editRating(s.id, change)
 		s.editRating(id, change / 2)
-		logger.finer("$this updated Rating to $s by $change")
+		logger.trace("$this updated Rating to $s by $change")
 	}
 	
 	fun updateRating(change: Float) {
 		editRating(id, change)
-		logger.finer("$this updated Rating by $change")
+		logger.trace("$this updated Rating by $change")
 	}
 	
 	fun initRatings(line: ByteArray) {
