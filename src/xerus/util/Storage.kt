@@ -13,7 +13,7 @@ import java.util.function.Consumer
  */
 class Storage<E> constructor(
 		/** required for [getOrDefault]  */
-		private val defaultVal: E? = null) : ArrayList<E?>(256), Iterable<E> {
+		private val defaultVal: E? = null) : ArrayList<E?>(256) {
 	
 	/** the index of the last non-null item  */
 	override var size: Int = 0

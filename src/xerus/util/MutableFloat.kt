@@ -278,12 +278,12 @@ class MutableFloat(private var value: Float = 0f) : Number(), Comparable<Mutable
 	 *
 	 * This definition allows hashtables to operate properly.
 	 *
-	 * @param obj  the object to compare with, null returns false
+	 * @param other  the object to compare with, null returns false
 	 * @return `true` if the objects are the same; `false` otherwise.
 	 * @see java.lang.Float.floatToIntBits
 	 */
-	override fun equals(obj: Any?): Boolean {
-		return obj is MutableFloat && java.lang.Float.floatToIntBits(obj.value) == java.lang.Float.floatToIntBits(value)
+	override fun equals(other: Any?): Boolean {
+		return other is MutableFloat && java.lang.Float.floatToIntBits(other.value) == java.lang.Float.floatToIntBits(value)
 	}
 	
 	/**

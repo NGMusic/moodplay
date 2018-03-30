@@ -1,8 +1,10 @@
+package xerus.ratings
+
 import org.slf4j.LoggerFactory
 import xerus.util.MutableFloat
 import xerus.util.Storage
 
-abstract class RatingsHelper {
+abstract class AbstractRatingsHelper {
 	
 	abstract val defaultRating: Rating
 	
@@ -10,12 +12,12 @@ abstract class RatingsHelper {
 	abstract fun getRatableById(id: Int): Ratings?
 	
 	companion object {
-		lateinit var instance: RatingsHelper
+		lateinit var instance: AbstractRatingsHelper
 	}
 	
 }
 
-/** Requires an instance of [RatingsHelper] at [RatingsHelper.instance] to work */
+/** requires [AbstractRatingsHelper.instance] to be initialized */
 class Ratings(override val id: Int) : Ratable {
 	
 	private val ratings: Storage<MutableFloat> = Storage(MutableFloat(helper.defaultRating))
@@ -24,39 +26,39 @@ class Ratings(override val id: Int) : Ratable {
 	override fun getRating(id: Int): Rating = getRatingInternal(id).toFloat()
 	
 	private fun getRatingInternal(id: Int): MutableFloat = ratings[id] ?: run {
-		val rating = MutableFloat(helper.getRatableById(id)?.let { other ->
-			helper.calculateRating(this, other).also { r -> other.ratings.set(id, r) }
-		} ?: helper.defaultRating)
+		val rating = helper.getRatableById(id)?.let { other ->
+			MutableFloat(helper.calculateRating(this, other)).also { other.ratings[id] = it }
+		} ?: MutableFloat(helper.defaultRating)
 		ratings[id] = rating
 		rating
 	}
 	
-	private fun editRating(id: Int, change: Float) {
+	private fun editRating(id: Int, change: Rating) {
 		val f = getRatingInternal(id)
 		// apply a function to softly cap off the sides
 		val temp = f.toFloat() / 8 - 1
 		f.add((-temp * temp + 1) * change)
 	}
 	
-	fun updateRating(s: Ratings, change: Float) {
-		editRating(s.id, change)
-		s.editRating(id, change / 2)
-		logger.trace("$this updated Rating to $s by $change")
+	override fun updateRating(other: Ratable, change: Rating) {
+		editRating(other.id, change)
+		(other as? Ratings)?.editRating(id, change / 2)
+		logger.trace("$this updated xerus.ratings.Rating to $other by $change")
 	}
 	
-	fun updateRating(change: Float) {
+	override fun updateRating(change: Rating) {
 		editRating(id, change)
-		logger.trace("$this updated Rating by $change")
+		logger.trace("$this updated xerus.ratings.Rating by $change")
 	}
 	
-	fun initRatings(line: ByteArray) {
+	fun read(line: ByteArray) {
 		ratings.ensureCapacity(line.size)
 		line.mapTo(ratings) {
 			MutableFloat((it.toInt() and 0x0FF) / 16f)
 		}
 	}
 	
-	fun serialiseRatings(): ByteArray {
+	fun write(): ByteArray {
 		val res = ByteArray(ratings.size)
 		for (i in ratings.indices)
 			res[i] = (16 * getRating(i)).toByte()
@@ -65,7 +67,8 @@ class Ratings(override val id: Int) : Ratable {
 	
 	companion object {
 		val logger = LoggerFactory.getLogger(Rating::class.java)
-		val helper = RatingsHelper.instance
+		inline val helper
+			get() = AbstractRatingsHelper.instance
 	}
 	
 }
