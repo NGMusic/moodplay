@@ -51,14 +51,14 @@ class Ratings(override val id: Int) : Ratable {
 		logger.trace("$this updated xerus.ratings.Rating by $change")
 	}
 	
-	fun read(line: ByteArray) {
+	fun deserialize(line: ByteArray) {
+		ratings.clear()
 		ratings.ensureCapacity(line.size)
-		line.mapTo(ratings) {
-			MutableFloat((it.toInt() and 0x0FF) / 16f)
-		}
+		for (byte in line)
+			ratings.add(MutableFloat((byte.toInt() and 0x0FF) / 16f))
 	}
 	
-	fun write(): ByteArray {
+	fun serialize(): ByteArray {
 		val res = ByteArray(ratings.size)
 		for (i in ratings.indices)
 			res[i] = (16 * getRating(i)).toByte()
