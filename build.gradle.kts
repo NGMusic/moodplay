@@ -2,12 +2,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	maven
-    kotlin("jvm") version "1.2.51"
+    kotlin("jvm") version "1.2.71"
 }
 
 group = "xerus.music"
 
-java.sourceSets["main"].java.srcDir("src")
+sourceSets["main"].java.srcDir("src")
 
 repositories {
     jcenter()
